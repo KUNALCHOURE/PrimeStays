@@ -1,0 +1,115 @@
+.navbar{
+    height: 5rem;
+    background-color: white;
+}
+
+.navbar-brand .fa-compass {
+    color: #fe424d;
+    font-size: 2rem;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+footer {
+    background-color: #ebebeb;
+    padding: 1rem;
+    text-align: center;
+}
+
+.f-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-icon {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-icon i {
+    margin: 0 10px;
+}
+
+.footer-link a {
+    color: #222222;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer-link a:hover {
+    text-decoration: underline;
+}
+
+.name {
+    margin: 0.5rem 0;
+}
+
+.listing-cards {
+    border: none;
+    margin-bottom: 1rem;
+}
+
+.card-img-top {
+    border-radius: 1rem;
+    width: 100%;
+    object-fit: cover !important;
+}
+
+.card-body {
+    padding: 0;
+}
+
+.card-text p {
+    font-weight: 400;
+}
+
+.show-info {
+    text-decoration: none;
+}
+
+.card-img-overlay {
+    opacity: 0;
+}
+
+.card-img-overlay:hover {
+    opacity: 0.2;
+    background-color: white;
+}
+
+#create {
+    background-color: #fe424d;
+    border: none !important;
+}
+
+.show-img {
+    height: 30vh;
+}
+
+.btns {
+    display: flex;
+}
+
+.show-card {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.review-card {
+    border: 1px solid black;
+}
+
+.image {
+    height: 200px;
+    width: 200px;
+}
