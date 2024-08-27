@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a Hotel Booking Website built with Node.js, Express, and MongoDB. The application allows users to view, create, and edit hotel listings, add reviews, and manage user authentication. It also integrates with Cloudinary for image storage and provides a responsive user interface.
+This is a Hotel Booking Website built with HTML,CSS,JS,Node.js, Express, and MongoDB. The application allows users to view, create, and edit hotel listings, add reviews, and manage user authentication. It also integrates with Cloudinary for image storage and provides a responsive user interface.
 
 ## Features
 
