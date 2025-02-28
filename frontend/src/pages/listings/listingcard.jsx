@@ -10,7 +10,7 @@ const ListingCard = ({ listing, showTax }) => {
       <div className="border-none mb-4 transition-transform duration-200 hover:-translate-y-1">
         <div className="relative">
           <img 
-            src={listing.image.url} 
+            src={listing.image?.url || "https://cdn.pixabay.com/photo/2017/06/13/12/33/hotel-2391347_1280.jpg"} 
             alt={listing.title}
             className="w-full h-80 object-cover rounded-xl"
           />

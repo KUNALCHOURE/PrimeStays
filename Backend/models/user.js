@@ -20,6 +20,18 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
+    
+    fullname:{
+        type:String,
+       required:true
+       },
+       
+       refreshtoken:{
+        type:String,
+   
+    },
+
+
    
 },{timestamps:true});
 

@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import authService  from '../services/authservice';
 import { toast } from 'react-hot-toast';
-
+import api from '../services/api';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             const data = await authService.login(credentials);
-            setUser(data.user);
+            setUser(data.data.user);
             toast.success('Welcome back!');
         } catch (error) {
             toast.error(error.message);
@@ -20,16 +20,41 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const signup = async (userData) => {
+    const register = async (userData) => {
         try {
-            const data = await authService.signup(userData);
-            setUser(data.user);
-            toast.success('Welcome to Wanderlust!');
+            console.log("Inside register function in AuthContext", userData);
+            
+            // Call the authService to register the user
+            const response = await authService.register(userData);  //we are getting response.data and we are naming it as response here
+            
+            console.log("User registered successfully", response);
+            
+            console.log("Full API Response:", response);
+
+         
+            console.log("Response Data:", response.data);
+            // Check if response has user data
+            if (!response || !response.data || !response.data.user) {
+                throw new Error("Invalid response from the server");
+            }
+    
+            // Set user in state
+            setUser(response.data.user);
+
+            toast.success("Welcome to Wanderlust!");
         } catch (error) {
-            toast.error(error.message);
+            console.error("Error during registration:", error);
+    
+            // Extract error message correctly
+            const errorMessage = error?.message || error?.response?.data?.message || "Signup failed. Please try again.";
+    
+            // Show error message in toast
+            toast.error(errorMessage);
+    
             throw error;
         }
     };
+    
 
     const logout = async () => {
         try {
@@ -42,23 +67,28 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Check if user is already logged in
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = await api.get('/auth/check');
-                if (response.data.user) {
-                    setUser(response.data.user);
+               
+                const response = await api.get("/auth/current-user");  // Use existing route
+              
+
+                 //console.log(response.data)
+                if (response.data.data.userobject) {
+
+                    setUser(response.data.data.userobject);
                 }
             } catch (error) {
-                console.error('Auth check failed:', error);
+                console.error("Auth check failed:", error);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         checkAuth();
     }, []);
+    
 
     return (
         <AuthContext.Provider 
@@ -66,8 +96,7 @@ export const AuthProvider = ({ children }) => {
                 user, 
                 login, 
                 logout, 
-                signup, 
-                isAuthenticated: !!user,
+                register, 
                 loading 
             }}
         >

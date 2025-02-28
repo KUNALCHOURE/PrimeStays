@@ -11,19 +11,28 @@ const authService = {
         }
     },
 
-    signup: async (userData) => {
+    register: async (userData) => {
         try {
-            const response = await api.post('/auth/signup', userData);
+            console.log("inside the register ");
+            const response = await api.post('/auth/register', userData);
+            console.log("data added");
             return response.data;
         } catch (error) {
-            throw error.response?.data || error.message;
+            console.error("API Error:", error.response?.data);
+    
+            // Extract proper error message
+            const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+    
+            // Throw an error object with the correct message
+            throw new Error(errorMessage);
         }
     },
+    
 
     logout: async () => {
         try {
             const response = await api.get('/auth/logout');
-            return response.data;
+            return response;
         } catch (error) {
             throw error.response?.data || error.message;
         }

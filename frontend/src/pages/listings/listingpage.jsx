@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ListingCard from './listingcard';
 import FilterBar from './filterbar';
+import api from '../../services/api';
 const ListingsPage = () => {
     const [listings, setListings] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -17,12 +18,14 @@ const ListingsPage = () => {
   
     const fetchListings = async () => {
       try {
-        const response = await fetch('/api/listings');
-        if (!response.ok) throw new Error('Failed to fetch listings');
-        const data = await response.json();
-        setListings(data);
+        const response = await api.get('/listings');
+        if (!response.data || response.status !== 200) {
+          throw new Error('Failed to fetch listings');
+        }    
+        
+        setListings(response.data.data);
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || err.message || 'Something went wrong');
       } finally {
         setLoading(false);
       }
