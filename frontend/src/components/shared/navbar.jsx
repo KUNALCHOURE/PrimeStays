@@ -1,7 +1,7 @@
 // src/components/Navbar/Navbar.jsx
 import { Link } from 'react-router-dom';
 import { FaCompass } from 'react-icons/fa';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/authcontext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -16,11 +16,11 @@ const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-4">
-            {console.log(user)};
+            {console.log(user)}
             {user? (
               <>
                 <span className="text-gray-600 font-medium">
-                  Welcome, {user.name}
+                Welcome {user.username}
                 </span>
                 <button
                   onClick={logout}
