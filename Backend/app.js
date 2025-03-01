@@ -39,7 +39,7 @@ app.use(cookieParser());
 
 // API Routes
 app.use("/api/listings", listingRoutes);
-app.use("/api/listings", reviewsRoutes);
+app.use("/api/listing", reviewsRoutes);
 app.use("/api/auth", userRoutes);
 
 // Catch All Invalid Routes (404 Handler)

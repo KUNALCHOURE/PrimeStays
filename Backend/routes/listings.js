@@ -6,7 +6,8 @@ import {
     show,
     create,
     updateListing,
-    deleteListing
+    deleteListing,
+    filterdata 
 } from "../controllers/listings.js";
 
 const router = Router();
@@ -19,5 +20,7 @@ router.route("/:id")
     .get(show)
     .put(verifyJWT, updateListing)
     .delete(verifyJWT, deleteListing);
+
+router.route('/filters').get(filterdata);
 
 export default router;

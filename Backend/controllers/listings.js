@@ -2,7 +2,7 @@ import Listing from "../models/listing.js";
 import Apierror from "../utils/Apierror.js";
 import Apiresponse from "../utils/apiresponse.js";
 import asynchandler from "../utils/asynchandler.js";
-
+import mongoose from "mongoose";
 // Get all listings
 const index = asynchandler(async (req, res) => {
     const listings = await Listing.find({});
@@ -11,9 +11,16 @@ const index = asynchandler(async (req, res) => {
     );
 });
 
-// Show single listing
 const show = asynchandler(async (req, res) => {
     const { id } = req.params;
+
+    // Validate the ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json(
+            new Apierror(400, "Invalid listing ID")
+        );
+    }
+
     const listing = await Listing.findById(id)
         .populate({
             path: "reviews",
@@ -33,7 +40,6 @@ const show = asynchandler(async (req, res) => {
         new Apiresponse(200, listing, "Listing fetched successfully")
     );
 });
-
 // Create new listing
 const create = asynchandler(async (req, res) => {
     //let url = req.file.path;
@@ -114,4 +120,18 @@ const deleteListing = asynchandler(async (req, res) => {
     );
 });
 
-export { index, show, deleteListing, updateListing, create };
+const filterdata = asynchandler(async (req, res) => {
+    try {
+        console.log("Received request at /filters");
+
+        const cities = await Listing.distinct('location');
+        const states = await Listing.distinct('country');
+
+        res.status(200).json(new Apiresponse(200, { cities, states }));
+    } catch (error) {
+        console.error("Error in filterdata:", error);
+        res.status(500).json({ error: 'Failed to fetch filter data', details: error.message });
+    }
+});
+
+export { index, show, deleteListing, updateListing, create,filterdata };
