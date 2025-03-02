@@ -22,60 +22,79 @@ const generateAccessandrefreshtoken = async (userID) => {
   }
 };
 
+
 const registerUser = asynchandler(async (req, res) => {
-  console.log("inside the reigster controllers")
-  let { fullname, username, email, password } = req.body;
-console.log(fullname);
-console.log(username);
+  console.log("inside the register controllers")
+  let { fullname, username, email, password, role = 'user' } = req.body; // Add role with default value
+  console.log(fullname);
+  console.log(username);
+  console.log("Role:", role); // Log role for debugging
+
+  // Validate role
+  if (role !== 'user' && role !== 'hotel_lister') {
+    throw new Apierror(400, "Invalid role specified. Must be either 'user' or 'hotel_lister'");
+  }
+
   if ([fullname, email, username, password].some((field) => field?.trim() === "")) {
     throw new Apierror(400, "All fields are required");
   }
-console.log("1st");
+
+  console.log("1st");
   let existeduser = await user.findOne({
     $or: [{ username }, { email }],
   });
-console.log("2nd")
+
+  console.log("2nd")
   if (existeduser) {
     throw new Apierror(409, "User with username or email already exists");
   }
   console.log("second");
 
-  
-    const usersave = await user.create({
-      username: username.toLowerCase(),
-      email,
-      fullname,
-      password,
-    });
-    console.log("3rd");
-  
+  const usersave = await user.create({
+    username: username.toLowerCase(),
+    email,
+    fullname,
+    password,
+    role    // Add role to user creation
+  });
+  console.log("3rd");
+
   const createduser = await user.findById(usersave._id).select("-password -refreshtoken");
   if (!createduser) {
     throw new Apierror(500, "There is a problem while registering the user");
   }
 
- console.log("Generating tokens...");
+  console.log("Generating tokens...");
     
-    // ✅ Generate tokens for automatic login
-    const { accesstoken, refreshtoken } = await generateAccessandrefreshtoken(usersave._id);
+  // Generate tokens with role included
+  const { accesstoken, refreshtoken } = await generateAccessandrefreshtoken(usersave._id);
 
-    // ✅ Set tokens in HTTP-only cookies
-    const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-    };
+  // Set tokens in HTTP-only cookies
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  };
 
-    console.log("Register complete - sending response");
+  console.log("Register complete - sending response");
     
-    // ✅ Return user data + tokens
-    return res.status(201)
-        .cookie("accessToken", accesstoken, options)
-        .cookie("refreshToken", refreshtoken, options)
-        .json(new Apiresponse(200, { user: createduser, accesstoken, refreshtoken }, "User registered successfully"));
-
+  // Return user data + tokens
+  return res.status(201)
+    .cookie("accessToken", accesstoken, options)
+    .cookie("refreshToken", refreshtoken, options)
+    .json(new Apiresponse(
+      200, 
+      { 
+        user: {
+          ...createduser.toObject(),
+          role: createduser.role  // Explicitly include role in response
+        }, 
+        accesstoken, 
+        refreshtoken 
+      }, 
+      "User registered successfully"
+    ));
 });
-
 const loginuser = asynchandler(async (req, res) => {
   let { email, username, password } = req.body;
 

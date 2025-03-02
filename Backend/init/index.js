@@ -1,41 +1,32 @@
-const mongoose = require("mongoose");
-const Listing = require("../models/listing.js");
-const { data } = require("./data.js"); // Your sample listings data
+import mongoose from "mongoose";
+import Listing from "../models/listing.js";
+import { sampleListings } from "./data.js"; // Your new listings data
+import dotenv from 'dotenv';
 
-// If using environment variables
-if(process.env.NODE_ENV !== "production") {
-    require('dotenv').config();
-}
+dotenv.config();
 
-const dbUrl = process.env.ATLASDB_URL;
-
-async function main() {
+const initDB = async () => {
     try {
-        await mongoose.connect(dbUrl);
-        console.log("Connected to DB");
-        
-        // Delete existing data
+        // Connect to MongoDB
+        await mongoose.connect(process.env.ATLASDB_URL);
+        console.log("Connected to MongoDB");
+
+        // Delete all existing listings
         await Listing.deleteMany({});
-        console.log("Old data deleted");
+        console.log("Cleared existing listings");
 
-        // Insert new data
-        await Listing.insertMany(data);
-        console.log("New data inserted");
+        // Insert new listings
+        await Listing.insertMany(sampleListings);
+        console.log("Added new listings successfully");
 
-    } catch (err) {
-        console.log("Error occurred:");
-        console.log(err);
+    } catch (error) {
+        console.error("Error:", error);
     } finally {
         // Close the connection
-        mongoose.connection.close();
+        await mongoose.connection.close();
+        console.log("MongoDB connection closed");
     }
-}
+};
 
-main()
-    .then(() => {
-        console.log("Seeding completed!");
-    })
-    .catch((err) => {
-        console.log("Error in seeding:");
-        console.log(err);
-    });
+// Run the initialization
+initDB();
