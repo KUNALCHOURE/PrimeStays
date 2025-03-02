@@ -40,8 +40,11 @@ export const AuthProvider = ({ children }) => {
     
             // Set user in state
             setUser(response.data.user);
-
-            toast.success("Welcome to Wanderlust!");
+            const welcomeMessage = userData.role === 'hotel_lister' 
+            ? 'Welcome to Wanderlust as a Hotel Lister!' 
+            : 'Welcome to Wanderlust!';
+        toast.success(welcomeMessage);
+           
         } catch (error) {
             console.error("Error during registration:", error);
     
@@ -65,6 +68,9 @@ export const AuthProvider = ({ children }) => {
             toast.error('Error logging out');
             throw error;
         }
+    };
+    const isHotelLister = () => {
+        return user?.role === 'hotel_lister';
     };
 
     useEffect(() => {
@@ -97,7 +103,8 @@ export const AuthProvider = ({ children }) => {
                 login, 
                 logout, 
                 register, 
-                loading 
+                loading,
+                isHotelLister
             }}
         >
             {!loading && children}
