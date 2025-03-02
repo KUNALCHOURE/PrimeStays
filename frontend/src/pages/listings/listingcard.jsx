@@ -19,12 +19,16 @@ const ListingCard = ({ listing, showTax }) => {
         
         <div className="mt-2">
           <h3 className="font-bold text-lg">{listing.title}</h3>
+        
           <p className="text-gray-700">
-            ₹{listing.price?.toLocaleString("en-IN")}/night
-            {showTax && (
-              <span className="text-gray-500 ml-2">+18% GST</span>
-            )}
-          </p>
+          ₹
+          {showTax
+              ?(listing.price * 1.18)?.toLocaleString("en-IN")
+              :listing.price?.toLocaleString("en-IN") 
+          }/night
+            </p>
+                 
+          
           <p className="text-gray-600">{listing.location}</p>
         </div>
       </div>
