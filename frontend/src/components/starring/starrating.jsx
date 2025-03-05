@@ -1,42 +1,61 @@
 // src/components/StarRating/StarRating.jsx
-import './starring.css'
-const StarRating = ({ value, onChange, readonly }) => {
-    return (
-      <div className="starability-slot">
-        <input
-          type="radio"
-          id="no-rate"
-          className="input-no-rate"
-          name="rating"
-          value="1"
-          checked={value === 1}
-          onChange={() => !readonly && onChange(1)}
-          disabled={readonly}
-        />
-        {[1, 2, 3, 4, 5].map((rating) => (
-          <div key={rating} className="inline-block">
-            <input
-              type="radio"
-              id={`rate${rating}`}
-              name="rating"
-              value={rating}
-              checked={value === rating}
-              onChange={() => !readonly && onChange(rating)}
-              disabled={readonly}
-            />
-            <label
-              htmlFor={`rate${rating}`}
-              title={rating === 1 ? "Terrible" : 
-                     rating === 2 ? "Not good" :
-                     rating === 3 ? "Average" :
-                     rating === 4 ? "Very good" : "Amazing"}
-            >
-              {rating} stars
-            </label>
-          </div>
-        ))}
-      </div>
-    );
+import React from 'react';
+import './starring.css';
+
+const StarRating = ({ 
+  value = 0, 
+  onChange = () => {}, 
+  readonly = false 
+}) => {
+  const handleRatingChange = (rating) => {
+    if (!readonly) {
+      onChange(rating);
+    }
   };
-  
-  export default StarRating;
+
+  return (
+    <fieldset className="starability-slot">
+      {/* No rating option */}
+      <input
+        type="radio"
+        id="no-rate"
+        className="input-no-rate"
+        name="rating"
+        value="0"
+        checked={value === 0}
+        onChange={() => handleRatingChange(0)}
+        disabled={readonly}
+      />
+
+      {/* Star ratings */}
+      {[5, 4, 3, 2, 1].map((rating) => (
+        <React.Fragment key={rating}>
+          <input
+            type="radio"
+            id={`rate${rating}`}
+            name="rating"
+            value={rating}
+            checked={value === rating}
+            onChange={() => handleRatingChange(rating)}
+            disabled={readonly}
+            className={`input-${rating}`}
+          />
+          <label 
+            htmlFor={`rate${rating}`}
+            title={
+              rating === 1 ? "Terrible" : 
+              rating === 2 ? "Not good" :
+              rating === 3 ? "Average" :
+              rating === 4 ? "Very good" : 
+              "Amazing"
+            }
+          >
+            {rating} stars
+          </label>
+        </React.Fragment>
+      ))}
+    </fieldset>
+  );
+};
+
+export default StarRating;
