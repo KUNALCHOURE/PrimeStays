@@ -10,7 +10,7 @@ const Navbar = () => {
     <nav className="h-20 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 h-full">
         <div className="flex items-center justify-between h-full">
-          <Link to="/" className="flex items-center">
+          <Link to="/listings" className="flex items-center">
             <FaCompass className="text-[#fe424d] text-4xl" />
             <span className="ml-2 text-xl font-semibold">Wonderlust</span>
           </Link>
@@ -30,12 +30,20 @@ const Navbar = () => {
                 </button>
               </>
             ) : (
+              <>
               <Link
                 to="/login"
                 className="text-gray-600 hover:text-gray-900 font-medium"
               >
                 Login
               </Link>
+              <Link
+                to="/signup"
+                className="text-gray-600 hover:text-gray-900 font-medium"
+              >
+                Signup
+              </Link>
+              </>
             )}
           </div>
         </div>

@@ -1,7 +1,10 @@
 // src/pages/Home/Home.jsx
 import { Link } from 'react-router-dom';
-
+import { useAuth } from '../context/authcontext';
 const Home = () => {
+   const {user}=useAuth();
+
+   
   return (
     <div className="min-h-[calc(100vh-64px)] relative">
       {/* Hero Section */}
@@ -11,8 +14,35 @@ const Home = () => {
           backgroundImage: "url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3')",
         }}
       >
-        <div className="absolute inset-0 bg-black/40" /> {/* Overlay */}
+        {user?(
+         <>
+           <div className="relative h-full flex flex-col items-center justify-center text-white px-4">
+           <div className="overlay absolute inset-0 bg-black opacity-50"></div> {/* Overlay */}
+           <div className="relative z-10"> 
+          <h1 className="text-5xl md:text-6xl font-bold text-center mb-6">
+            Find Your Next Adventure
+          </h1>
+          <p className="text-xl md:text-2xl text-center mb-8">
+            Discover unique stays and experiences around the world
+          </p>
+          
+          <div className="flex gap-4 justify-center ">
+            <Link 
+              to="/listings" 
+              className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-semibold transition-colors"
+            >
+              Lets get Started 
+            </Link>
+           
+          </div>
+        </div>
+        </div>
         
+         </>
+        ):
+        (
+        <>
+         <div className="absolute inset-0 bg-black/40" /> {/* Overlay */}
         <div className="relative h-full flex flex-col items-center justify-center text-white px-4">
           <h1 className="text-5xl md:text-6xl font-bold text-center mb-6">
             Find Your Next Adventure
@@ -36,6 +66,11 @@ const Home = () => {
             </Link>
           </div>
         </div>
+        </>
+        )}
+       
+        
+          
       </div>
 
       {/* Features Section */}

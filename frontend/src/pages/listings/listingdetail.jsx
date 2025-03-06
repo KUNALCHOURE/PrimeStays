@@ -82,7 +82,7 @@ const ListingDetail = () => {
 
   const handleDeleteReview = async (reviewId) => {
     try {
-      await api.delete(`/listings/${id}/reviews/${reviewId}`);
+      await api.delete(`/listing/${id}/reviews/${reviewId}`);
       
       // Update the reviews list by filtering out the deleted review
       setCurrentListing(prev => ({
@@ -228,11 +228,13 @@ const ListingDetail = () => {
                 </div>
                 
                 {/* Show delete button only if user is the review author */}
+               
+                
                 {user && review.author && 
                  user._id === review.author._id && (
                   <button 
                     onClick={() => handleDeleteReview(review._id)}
-                    className="bg-dark text-white px-3 py-1 rounded text-sm mt-3"
+                    className="bg-red-600 border rounded-md text-white px-3 py-1 text-sm mt-3"
                   >
                     DELETE
                   </button>
