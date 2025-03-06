@@ -7,16 +7,13 @@ import { toast } from 'react-hot-toast';
 
 const ListingDetail = () => {
   const { id } = useParams();
-  const { user, isHotelLister } = useAuth(); // Get user from AuthContext
+  const { user } = useAuth(); 
   const [currentlisting, setCurrentListing] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const [reviewForm, setReviewForm] = useState({
-    rating: 1,
-    comment: ''
-  });
+  const [reviewForm, setReviewForm] = useState({ rating: 1, comment: '' });
 
   useEffect(() => {
     const fetchListingData = async () => {
@@ -24,228 +21,85 @@ const ListingDetail = () => {
         setIsLoading(true);
         const response = await api.get(`/listings/${id}`);
         setCurrentListing(response.data.data);
-        setIsLoading(false);
       } catch (e) {
-        console.error("Error while fetching details", e);
         setError("Failed to load listing details");
+      } finally {
         setIsLoading(false);
       }
     };
-
     fetchListingData();
   }, [id]);
 
   const handleReviewSubmit = async (e) => {
-    console.log("hello ");
-    console.log(`/listings/${id}/reviews`)
     e.preventDefault();
-    
-    if (!user) {
-        toast.error("Please login to add a review");
-        return;
-    }
-
-    if (!reviewForm.comment.trim()) {
-        toast.error("Please add a comment");
-        return;
-    }
+    if (!user) return toast.error("Please login to add a review");
+    if (!reviewForm.comment.trim()) return toast.error("Please add a comment");
 
     setIsSubmitting(true);
-
     try {
-      const response = await api.post(
-        `/listing/${id}/reviews`,  // Updated path to match backend
-        reviewForm
-    );
-        if (response.data.success) {
-            // Update the current listing with the new review
-            setCurrentListing(prev => ({
-                ...prev,
-                reviews: [...prev.reviews, response.data.data]
-            }));
-
-            // Reset form
-            setReviewForm({
-                rating: 1,
-                comment: ''
-            });
-
-            toast.success("Review added successfully!");
-        }
+      const response = await api.post(`/listing/${id}/reviews`, reviewForm);
+      if (response.data.success) {
+        setCurrentListing(prev => ({ ...prev, reviews: [...prev.reviews, response.data.data] }));
+        setReviewForm({ rating: 1, comment: '' });
+        toast.success("Review added successfully!");
+      }
     } catch (error) {
-        console.error("Error submitting review:", error);
-        toast.error(error.response?.data?.message || "Failed to submit review");
+      toast.error(error.response?.data?.message || "Failed to submit review");
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
-  const handleDeleteReview = async (reviewId) => {
-    try {
-      await api.delete(`/listing/${id}/reviews/${reviewId}`);
-      
-      // Update the reviews list by filtering out the deleted review
-      setCurrentListing(prev => ({
-        ...prev,
-        reviews: prev.reviews.filter(review => review._id !== reviewId)
-      }));
-
-      toast.success("Review deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting review:", error);
-      toast.error("Failed to delete review");
-    }
-  };
-
-  if (isLoading) {
-    return <div className="container mx-auto px-4">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="container mx-auto px-4 text-red-500">{error}</div>;
-  }
-
-  if (!currentlisting) {
-    return <div className="container mx-auto px-4">No listing found</div>;
-  }
+  if (isLoading) return <div className="flex justify-center items-center min-h-[50vh]"><div className="animate-spin h-12 w-12 border-4 border-t-red-600 border-gray-300 rounded-full"></div></div>;
+  if (error) return <div className="text-center text-red-600 text-lg font-semibold mt-10">{error}</div>;
 
   return (
-    <div className="container mx-auto px-4">
-      <div className="row mt-3">
-        <div className="col-8 offset-3">
-          <h1 className="text-3xl font-bold">{currentlisting.title || 'Untitled Listing'}</h1>
-        </div>
-
-        <div className="cards col-6 offset-3 show-card listing-cards">
-          {currentlisting.image && currentlisting.image.url && (
-            <img 
-              src={currentlisting.image.url}
-              className="card-img-top show-img h-[30vh] w-full object-cover rounded-t-lg" 
-              alt={currentlisting.title || 'Listing Image'}
-            />
-          )}
-          <div className="card-body p-4">
-            {currentlisting.owner && (
-              <p className="card-text italic">
-                Owned by {currentlisting.owner.fullname || 'Unknown'}
-              </p>
-            )}
-            <p className="card-text mt-2">{currentlisting.description || 'No description'}</p>
-            <p className="card-text mt-2">
-              ₹{currentlisting.price 
-                ? currentlisting.price.toLocaleString("en-IN") 
-                : 'Price not available'}
-            </p>
-            <p className="card-text">{currentlisting.location || 'Location not specified'}</p>
-            <p className="card-text">{currentlisting.country || 'Country not specified'}</p>
-          </div>
+    <div className="container mx-auto px-6 py-12 mt-20">
+      {/* Hero Section */}
+      <div className="relative w-full h-[50vh] overflow-hidden rounded-lg shadow-lg">
+        <img src={currentlisting.image?.url} alt={currentlisting.title} className="w-full h-full object-cover" />
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-6 text-white">
+          <h1 className="text-3xl font-bold">{currentlisting.title}</h1>
+          <p className="text-lg">₹{currentlisting.price?.toLocaleString("en-IN")}/night - {currentlisting.location}, {currentlisting.country}</p>
         </div>
       </div>
-
-      {/* Show edit/delete buttons only if user is the owner */}
-      {user && currentlisting.owner && 
-       user._id === currentlisting.owner._id && (
-        <div className="btns flex gap-4 mt-4">
-          <a 
-            href={`/listings/${currentlisting._id}/edit`}
-            className="btn bg-dark text-white px-4 py-2 rounded"
-          >
-            EDIT
-          </a>
-          <form method="post" action={`/listings/${currentlisting._id}?_method=DELETE`}>
-            <button className="btn bg-dark text-white px-4 py-2 rounded">
-              DELETE
-            </button>
-          </form>
-        </div>
-      )}
-
-      <hr className="my-6" />
-
-      {/* Show review form only if user is logged in */}
+      
+      {/* Details */}
+      <div className="bg-white p-6 shadow-lg rounded-lg mt-6">
+        <p className="text-gray-700">{currentlisting.description}</p>
+        <p className="text-lg font-semibold mt-4">Owned by {currentlisting.owner?.fullname || 'Unknown'}</p>
+      </div>
+      
+      {/* Review Form */}
       {user && (
-        <div className="col-8 offset-3 mb-3">
-          <h4 className="text-xl font-bold mb-4">Leave a review</h4>
-          <form 
-            onSubmit={handleReviewSubmit}
-            className="needs-validation"
-            noValidate
-          >
-            <div className="mt-3 mb-3">
-              <label className="block mb-2">Rating</label>
-              <StarRating 
-                value={reviewForm.rating}
-                onChange={(rating) => setReviewForm(prev => ({...prev, rating}))}
-              />
-            </div>
-
-            <div className="mt-3 mb-3">
-              <label className="block mb-2">COMMENT</label>
-              <textarea
-                value={reviewForm.comment}
-                onChange={(e) => setReviewForm(prev => ({
-                  ...prev, 
-                  comment: e.target.value
-                }))}
-                className="w-full p-2 border rounded"
-                rows="5"
-                required
-              />
-              <div className="invalid-feedback">
-                Please add some comment
-              </div>
-            </div>
-
-            <button 
-              className="bg-red-600 text-white border rounded-md px-4 py-2 "
-              disabled={isSubmitting}
-              
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Review'}
-            </button>
+        <div className="bg-gray-100 p-6 rounded-lg shadow-md mt-8">
+          <h4 className="text-xl font-bold">Leave a review</h4>
+          <form onSubmit={handleReviewSubmit}>
+            <StarRating value={reviewForm.rating} onChange={(rating) => setReviewForm(prev => ({...prev, rating}))} />
+            <textarea value={reviewForm.comment} onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))} className="w-full p-3 border rounded mt-4" rows="4" required placeholder="Write a review..."></textarea>
+            <button className="bg-red-600 text-white px-4 py-2 rounded mt-4 hover:bg-red-700 transition-all" disabled={isSubmitting}>{isSubmitting ? 'Submitting...' : 'Submit Review'}</button>
           </form>
         </div>
       )}
-
-      {/* Reviews Section */}
-      {currentlisting.reviews && currentlisting.reviews.length > 0 ? (
-        <>
-          <h3 className="text-2xl font-bold mt-6 mb-4">REVIEWS</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      {/* Reviews */}
+      {currentlisting.reviews?.length > 0 ? (
+        <div className="mt-10">
+          <h3 className="text-2xl font-bold">Reviews</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             {currentlisting.reviews.map((review) => (
-              <div 
-                key={review._id} 
-                className="card review-card p-4 border rounded"
-              >
-                <div className="card-body">
-                  <h5 className="card-title font-bold">
-                    {review.author?.username || 'Anonymous'}
-                  </h5>
-                  <div className="my-2">
-                    <StarRating value={review.rating} readonly />
-                  </div>
-                  <p className="card-text">{review.comment}</p>
-                </div>
-                
-                {/* Show delete button only if user is the review author */}
-               
-                
-                {user && review.author && 
-                 user._id === review.author._id && (
-                  <button 
-                    onClick={() => handleDeleteReview(review._id)}
-                    className="bg-red-600 border rounded-md text-white px-3 py-1 text-sm mt-3"
-                  >
-                    DELETE
-                  </button>
+              <div key={review._id} className="bg-white p-4 rounded-lg shadow-md">
+                <h5 className="font-bold">{review.author?.username || 'Anonymous'}</h5>
+                <StarRating value={review.rating} readonly />
+                <p className="text-gray-600 mt-2">{review.comment}</p>
+                {user && review.author && user._id === review.author._id && (
+                  <button className="text-red-600 text-sm mt-2 hover:underline" onClick={() => handleDeleteReview(review._id)}>Delete</button>
                 )}
               </div>
             ))}
           </div>
-        </>
-      ) : (
-        <p className="text-center text-gray-500 mt-6">No reviews yet</p>
-      )}
+        </div>
+      ) : <p className="text-center text-gray-500 mt-6">No reviews yet</p>}
     </div>
   );
 };
