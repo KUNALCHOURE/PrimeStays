@@ -16,7 +16,7 @@ const Home = () => {
       >
         {user?(
          <>
-           <div className="relative h-full flex flex-col items-center justify-center text-white px-4">
+           <div className="relative h-full flex flex-col items-center justify-center text-white px-4 mt-20">
            <div className="overlay absolute inset-0 bg-black opacity-50"></div> {/* Overlay */}
            <div className="relative z-10"> 
           <h1 className="text-5xl md:text-6xl font-bold text-center mb-6">
@@ -42,8 +42,9 @@ const Home = () => {
         ):
         (
         <>
-         <div className="absolute inset-0 bg-black/40" /> {/* Overlay */}
-        <div className="relative h-full flex flex-col items-center justify-center text-white px-4">
+        <div className="relative h-full flex flex-col items-center justify-center text-white px-4 mt-20">
+        <div className="overlay absolute inset-0 bg-black opacity-50"></div> {/* Overlay */}
+        <div className="relative z-10"> 
           <h1 className="text-5xl md:text-6xl font-bold text-center mb-6">
             Find Your Next Adventure
           </h1>
@@ -51,7 +52,7 @@ const Home = () => {
             Discover unique stays and experiences around the world
           </p>
           
-          <div className="flex gap-4">
+          <div className="flex gap-4 justify-center">
             <Link 
               to="/login" 
               className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-semibold transition-colors"
@@ -66,6 +67,8 @@ const Home = () => {
             </Link>
           </div>
         </div>
+        </div>
+        
         </>
         )}
        

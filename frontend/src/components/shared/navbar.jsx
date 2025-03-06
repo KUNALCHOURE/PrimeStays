@@ -1,54 +1,60 @@
-// src/components/Navbar/Navbar.jsx
-import { Link } from 'react-router-dom';
-import { FaCompass } from 'react-icons/fa';
-import { useAuth } from '../../context/authcontext';
+import { Link } from "react-router-dom";
+import { FaCompass } from "react-icons/fa";
+import { useAuth } from "../../context/authcontext";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
 
   return (
-    <nav className="h-20 bg-white shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 h-full">
-        <div className="flex items-center justify-between h-full">
-          <Link to="/listings" className="flex items-center">
-            <FaCompass className="text-[#fe424d] text-4xl" />
-            <span className="ml-2 text-xl font-semibold">Wonderlust</span>
-          </Link>
+    <motion.nav
+      className="h-20 bg-gray-900 text-white shadow-md fixed w-full top-0 z-50"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/listings" className="flex items-center space-x-2">
+          <FaCompass className="text-red-500 text-4xl" />
+          <span className="text-2xl font-bold tracking-wide">Wonderlust</span>
+        </Link>
 
-          <div className="flex items-center space-x-4">
-            {console.log(user)}
-            {user? (
-              <>
-                <span className="text-gray-600 font-medium">
-                Welcome {user.username}
-                </span>
-                <button
-                  onClick={logout}
-                  className="text-gray-600 hover:text-gray-900 font-medium"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
+        {/* Navigation Links */}
+        <div className="flex items-center space-x-6 text-lg font-medium">
+          {user ? (
+            <>
+              <span className="text-gray-300">Welcome, {user.username}</span>
+              <motion.button
+                onClick={logout}
+                className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-600 transition-all"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Logout
+              </motion.button>
+            </>
+          ) : (
+            <>
               <Link
                 to="/login"
-                className="text-gray-600 hover:text-gray-900 font-medium"
+                className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-600 transition-all"
               >
                 Login
               </Link>
-              <Link
-                to="/signup"
-                className="text-gray-600 hover:text-gray-900 font-medium"
-              >
-                Signup
-              </Link>
-              </>
-            )}
-          </div>
+              <motion.div whileHover={{ scale: 1.1 }}>
+                <Link
+                  to="/signup"
+                  className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-600 transition-all"
+                >
+                  Signup
+                </Link>
+              </motion.div>
+            </>
+          )}
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
