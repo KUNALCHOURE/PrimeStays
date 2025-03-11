@@ -36,9 +36,9 @@ const ListingsPage = () => {
     try {
         console.log("Fetching filter data");
         const response = await fetch("http://localhost:3030/api/listings/filters", {
-            method: "GET",
-            credentials: "include"  // If using authentication
+            method: "GET"
         });
+        console.log(response);
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
         console.log("Fetched data:", data);

@@ -1,32 +1,109 @@
-// src/pages/Listings/NewListing.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '../../context/authcontext'; // Adjust the import path as needed
 
 const NewListing = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // Get the current user from auth context
   const [loading, setLoading] = useState(false);
+  const [formValues, setFormValues] = useState({
+    title: '',
+    description: '',
+    price: '',
+    location: '',
+    country: '',
+    image: null, // Add image to form values
+  });
+  const [formErrors, setFormErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    
+    // Handle file input separately
+    if (name === 'image') {
+      setFormValues({ 
+        ...formValues, 
+        image: files ? files[0] : null 
+      });
+      return;
+    }
+
+    setFormValues({ ...formValues, [name]: value });
+
+    // Simple validation logic
+    if (value.trim() === '') {
+      setFormErrors({ ...formErrors, [name]: 'This field is required' });
+    } else {
+      const newErrors = { ...formErrors };
+      delete newErrors[name];
+      setFormErrors(newErrors);
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    
+    // Check all required fields
+    Object.keys(formValues).forEach(key => {
+      if (key !== 'image' && (!formValues[key] || formValues[key].toString().trim() === '')) {
+        errors[key] = 'This field is required';
+      }
+    });
+
+    // Check if image is selected
+    if (!formValues.image) {
+      errors.image = 'Please upload an image';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("hello");
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     setLoading(true);
 
-    const formData = new FormData(e.target);
+    // Create FormData for file upload
+    const formData = new FormData();
+    
+    // Append all form values to FormData
+    Object.keys(formValues).forEach(key => {
+      if (key !== 'image') {
+        formData.append(key, formValues[key]);
+      }
+    });
+
+    // Append image file
+    if (formValues.image) {
+      formData.append('image', formValues.image);
+    }
 
     try {
-      const response = await fetch('/listings', {
+      const response = await fetch('http://localhost:3030/api/listings', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Authorization': `Bearer ${user.token}`, // Include JWT token
+        },
+        body: formData,
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create listing');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create listing');
       }
 
       toast.success('Listing created successfully!');
       navigate('/listings');
     } catch (error) {
-      toast.error('Error creating listing');
+      toast.error(error.message || 'Error creating listing');
     } finally {
       setLoading(false);
     }
@@ -43,7 +120,7 @@ const NewListing = () => {
           encType="multipart/form-data"
           noValidate
         >
-          {/* Title */}
+          {/* Title Input */}
           <div>
             <label 
               htmlFor="title" 
@@ -55,16 +132,20 @@ const NewListing = () => {
               type="text"
               id="title"
               name="title"
+              value={formValues.title}
+              onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               placeholder="Enter Title"
               required
             />
-            <div className="valid-feedback text-green-600 text-sm mt-1">
-              Title looks good
-            </div>
+            {formErrors.title && (
+              <div className="invalid-feedback text-red-600 text-sm mt-1">
+                {formErrors.title}
+              </div>
+            )}
           </div>
 
-          {/* Description */}
+          {/* Description Input */}
           <div>
             <label 
               htmlFor="description" 
@@ -75,14 +156,18 @@ const NewListing = () => {
             <textarea
               id="description"
               name="description"
+              value={formValues.description}
+              onChange={handleChange}
               rows="4"
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               placeholder="Enter Description"
               required
             />
-            <div className="valid-feedback text-green-600 text-sm mt-1">
-              Description looks good
-            </div>
+            {formErrors.description && (
+              <div className="invalid-feedback text-red-600 text-sm mt-1">
+                {formErrors.description}
+              </div>
+            )}
           </div>
 
           {/* Image Upload */}
@@ -97,9 +182,15 @@ const NewListing = () => {
               type="file"
               id="image"
               name="image"
+              onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               required
             />
+            {formErrors.image && (
+              <div className="invalid-feedback text-red-600 text-sm mt-1">
+                {formErrors.image}
+              </div>
+            )}
           </div>
 
           {/* Price and Location Row */}
@@ -115,13 +206,17 @@ const NewListing = () => {
                 type="number"
                 id="price"
                 name="price"
+                value={formValues.price}
+                onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                 placeholder="Enter Price"
                 required
               />
-              <div className="invalid-feedback text-red-600 text-sm mt-1">
-                Please enter a valid price
-              </div>
+              {formErrors.price && (
+                <div className="invalid-feedback text-red-600 text-sm mt-1">
+                  {formErrors.price}
+                </div>
+              )}
             </div>
 
             <div className="md:col-span-8">
@@ -135,13 +230,17 @@ const NewListing = () => {
                 type="text"
                 id="location"
                 name="location"
+                value={formValues.location}
+                onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                 placeholder="Enter Location"
                 required
               />
-              <div className="invalid-feedback text-red-600 text-sm mt-1">
-                Please enter location
-              </div>
+              {formErrors.location && (
+                <div className="invalid-feedback text-red-600 text-sm mt-1">
+                  {formErrors.location}
+                </div>
+              )}
             </div>
           </div>
 
@@ -157,23 +256,29 @@ const NewListing = () => {
               type="text"
               id="country"
               name="country"
+              value={formValues.country}
+              onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               placeholder="Enter Country"
               required
             />
-            <div className="invalid-feedback text-red-600 text-sm mt-1">
-              Please enter country
-            </div>
+            {formErrors.country && (
+              <div className="invalid-feedback text-red-600 text-sm mt-1">
+                {formErrors.country}
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-dark text-white py-2 px-4 rounded-md hover:bg-dark/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-dark transition-colors disabled:opacity-50"
-          >
-            {loading ? 'Creating...' : 'CREATE'}
-          </button>
+          <div className='flex justify-center'>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-30 text-center text-white font-bold py-2 px-4 border rounded-md bg-green-500"
+            >
+              {loading ? 'Creating...' : 'CREATE'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

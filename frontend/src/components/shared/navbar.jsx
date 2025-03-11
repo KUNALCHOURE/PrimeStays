@@ -4,7 +4,7 @@ import { useAuth } from "../../context/authcontext";
 import { motion } from "framer-motion";
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isHotelLister } = useAuth();
 
   return (
     <motion.nav
@@ -25,6 +25,14 @@ const Navbar = () => {
           {user ? (
             <>
               <span className="text-gray-300">Welcome, {user.username}</span>
+              {isHotelLister() && (
+                <Link
+                  to="/listings/new"
+                  className="bg-green-500 text-white px-4 py-2 rounded-md shadow hover:bg-green-600 transition-all"
+                >
+                  Add Listing
+                </Link>
+              )}
               <motion.button
                 onClick={logout}
                 className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-600 transition-all"
