@@ -45,7 +45,7 @@ const create = asynchandler(async (req, res) => {
     //let url = req.file.path;
    // let filename = req.file.filename;
 //console.log(url);
-    const { title, description, price, location, country,image } = req.body;
+    const { title, description, price, location, country} = req.body;
     
     const newListing = new Listing({
         title,
@@ -53,7 +53,7 @@ const create = asynchandler(async (req, res) => {
         price,
         location,
         country,
-        image: image,
+        image: imageUrl,
         owner: req.user._id
     });
 
