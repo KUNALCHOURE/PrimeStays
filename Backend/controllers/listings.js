@@ -131,6 +131,8 @@ const updateListing = asynchandler(async (req, res) => {
 
 // Delete listing
 const deleteListing = asynchandler(async (req, res) => {
+
+    console.log("this is deleting controller");
     const { id } = req.params;
     const listing = await Listing.findByIdAndDelete(id);
     
