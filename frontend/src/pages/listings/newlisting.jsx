@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../context/authcontext'; // Adjust the import path as needed
+import axios from 'axios';
 
 const NewListing = () => {
   const navigate = useNavigate();
@@ -59,55 +60,42 @@ const NewListing = () => {
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("hello");
-    // Validate form before submission
-    if (!validateForm()) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
-    setLoading(true);
-
-    // Create FormData for file upload
+  
     const formData = new FormData();
+    formData.append("title", formValues.title);
+    formData.append("description", formValues.description);
+    formData.append("price", formValues.price);
+    formData.append("location", formValues.location);
+    formData.append("country", formValues.country);
     
-    // Append all form values to FormData
-    Object.keys(formValues).forEach(key => {
-      if (key !== 'image') {
-        formData.append(key, formValues[key]);
-      }
-    });
-
-    // Append image file
     if (formValues.image) {
-      formData.append('image', formValues.image);
+        formData.append("image", formValues.image);
     }
 
+    // ✅ Debug: Log FormData content
+    for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]); // ✅ Should show "image" => File object
+    }
+  
     try {
-      const response = await fetch('http://localhost:3030/api/listings', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${user.token}`, // Include JWT token
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create listing');
-      }
-
-      toast.success('Listing created successfully!');
-      navigate('/listings');
+        const response = await axios.post("http://localhost:3030/api/listings", formData, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+  
+        console.log("Response:", response.data);
+        toast.success("Listing created successfully!");
+        navigate("/listings");
     } catch (error) {
-      toast.error(error.message || 'Error creating listing');
-    } finally {
-      setLoading(false);
+        console.error("Error:", error.response?.data || error.message);
+        toast.error(error.response?.data?.error || "Error creating listing");
     }
-  };
+};
+
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -20,7 +20,7 @@ const ListingsPage = () => {
   const fetchListings = async () => {
     try {
       const response = await api.get('/listings');
-      
+       console.log(response.data);
       if (!response.data || response.status !== 200) {
         throw new Error('Failed to fetch listings');
       }
@@ -42,6 +42,7 @@ const ListingsPage = () => {
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
         console.log("Fetched data:", data);
+        
         setFilterData(data);
     } catch (err) {
         console.error("Fetch failed:", err);
