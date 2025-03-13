@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+
 dotenv.config();
 
 const app = express();
@@ -14,19 +15,15 @@ import reviewsRoutes from "./routes/reviews.js";
 import userRoutes from "./routes/user.js";
 
 // Import models and utilities
-import Apierror from "./utils/Apierror.js"; // Import Apierror
+import Apierror from "./utils/Apierror.js"; // Ensure this file exists
 
 const port = process.env.PORT || 3030;
 const dbUrl = process.env.ATLASDB_URL;
 
 // Connect to MongoDB
 mongoose.connect(dbUrl)
-    .then(() => {
-        console.log("Connected to MongoDB");
-    })
-    .catch((err) => {
-        console.log("MongoDB connection error:", err);
-    });
+    .then(() => console.log(" Connected to MongoDB"))
+    .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Middleware
 app.use(cors({
@@ -37,25 +34,34 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// API Routes
+//  Serve Images from Public Folder
+app.use("/images", express.static("public/images"));
+
+//  API Routes
 app.use("/api/listings", listingRoutes);
-app.use("/api/listing", reviewsRoutes);
+app.use("/api/reviews", reviewsRoutes);  // ✅ Fixed inconsistent naming
 app.use("/api/auth", userRoutes);
 
-// Catch All Invalid Routes (404 Handler)
+//  404 Handler for Invalid Routes
+app.use((req, res, next) => {
+    res.status(404).json({
+        success: false,
+        status: 404,
+        message: "Route not found",
+    });
+});
 
+// Error Handling Middleware
 app.use((err, req, res, next) => {
-    // If error is an instance of Apierror, use its properties
     if (err instanceof Apierror) {
         return res.status(err.statuscode).json({
             success: false,
             status: err.statuscode,
-            message: err.message || "An error occurred", // ✅ Ensure message is included
+            message: err.message || "An error occurred",
             errors: err.errors || [],
         });
     }
 
-    // Handle other unexpected errors
     res.status(500).json({
         success: false,
         status: 500,
@@ -64,7 +70,5 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start Server
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
+// ✅ Start Server
+app.listen(port, () => console.log(`Server running on port ${port}`));

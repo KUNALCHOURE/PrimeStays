@@ -1,41 +1,27 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
+import streamifier from "streamifier";
+import dotenv from "dotenv";
 
-// ✅ Correct Cloudinary Configuration
+dotenv.config();
+
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY,  // ✅ Use process.env
+    api_key: process.env.CLOUDINARY_API_KEY,  
     api_secret: process.env.CLOUDINARY_API_SECRET  
 });
 
-// ✅ Fixed Upload Function
-const uploadcloudinary = async (localfilepath) => {
-    try {
-        if (!localfilepath) {
-            console.log("localfilepath is missing");
-            return null;
-        }
-
-        // ✅ Upload the file to Cloudinary
-        let response = await cloudinary.uploader.upload(localfilepath, {
-            resource_type: "auto"
+const uploadToCloudinary = (buffer) => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream((error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result.secure_url);
+            }
         });
 
-        console.log("Uploaded successfully:", response.url);
-
-        // ✅ Remove local file after successful upload
-        fs.unlinkSync(localfilepath);
-
-        return response;
-    } catch (err) {
-        console.error("Cloudinary upload failed:", err);
-
-        // ❌ Remove the file if the upload fails
-        if (fs.existsSync(localfilepath)) {
-            fs.unlinkSync(localfilepath);
-        }
-        return null;
-    }
+        streamifier.createReadStream(buffer).pipe(stream);
+    });
 };
 
-export { uploadcloudinary };
+export { uploadToCloudinary };

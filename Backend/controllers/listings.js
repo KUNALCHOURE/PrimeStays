@@ -41,28 +41,53 @@ const show = asynchandler(async (req, res) => {
     );
 });
 // Create new listing
-const create = asynchandler(async (req, res) => {
-    //let url = req.file.path;
-   // let filename = req.file.filename;
-//console.log(url);
-    const { title, description, price, location, country} = req.body;
-    
-    const newListing = new Listing({
-        title,
-        description,
-        price,
-        location,
-        country,
-        image: imageUrl,
-        owner: req.user._id
-    });
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 
-    await newListing.save();
-    
-    return res.status(201).json(
-        new Apiresponse(201, newListing, "Listing created successfully")
-    );
-});
+
+const create = async (req, res) => {
+    try {
+        console.log("Request Body:", req.body);
+        console.log("File Received:", req.file);
+
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "Image is required" });
+        }
+
+        // Upload image to Cloudinary directly from buffer
+        const cloudinaryUrl = await uploadToCloudinary(req.file.buffer);
+        if (!cloudinaryUrl) {
+            return res.status(500).json({ success: false, message: "Failed to upload image to Cloudinary" });
+        }
+         console.log("done");
+        // Store Cloudinary URL in DB
+        const { title, description, price, location, country } = req.body;
+        const nimage={
+              url:cloudinaryUrl,
+              filename:"image"
+        }
+        const newListing = new Listing({
+            title,
+            description,
+            price,
+            location,
+            country,
+            image: nimage,
+            owner: req.user._id
+        });
+
+        await newListing.save();
+console.log('done 2')
+console.log(cloudinaryUrl);
+        return res.status(201).json({
+            success: true,
+            listing: newListing,
+            message: "Listing created successfully"
+        });
+    } catch (error) {
+        console.error("Error creating listing:", error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
 
 // Update listing
 const updateListing = asynchandler(async (req, res) => {

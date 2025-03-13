@@ -1,6 +1,6 @@
 import { Router } from "express";
 import multer from "multer";
-import { uploadcloudinary } from "../utils/cloudinary.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 import { verifyJWT } from "../middlewares/authmiddleware.js";
 import {
     index,
@@ -21,31 +21,7 @@ const upload = multer({ storage });
 // Route to get all listings
 router.route("/")
     .get(index)
-    .post(
-        verifyJWT, // Middleware to verify JWT
-        ishotellister, // Middleware to check if user is a hotel lister
-        upload.single('image'), // Middleware to handle image upload
-        async (req, res) => {
-            try {
-                // Upload image to Cloudinary
-                const result = await new Promise((resolve, reject) => {
-                    const uploadStream = uploadcloudinary.uploader.upload_stream(
-                        { folder: 'listings' },
-                        (error, result) => {
-                            if (error) return reject(error);
-                            resolve(result);
-                        }
-                    );
-                    uploadStream.end(req.file.buffer);
-                });
-
-                // Call the create function with the image URL
-                create(req, res, result.secure_url);
-            } catch (error) {
-                res.status(500).json({ error: 'An error occurred while uploading the image' });
-            }
-        }
-    );
+    .post(verifyJWT, upload.single("image"), create);
 
 // Route to get, update, or delete a specific listing by ID
 router.route("/:id")
