@@ -1,6 +1,5 @@
 import { Router } from "express";
 import multer from "multer";
-import { uploadToCloudinary } from "../utils/cloudinary.js";
 import { verifyJWT } from "../middlewares/authmiddleware.js";
 import {
     index,

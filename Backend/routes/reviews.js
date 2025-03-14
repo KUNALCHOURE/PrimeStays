@@ -1,9 +1,8 @@
-import express from "express";
 import { Router } from "express";
 import asynchandler from "../utils/asynchandler.js";
 import { verifyJWT } from "../middlewares/authmiddleware.js";
 import { createReview, deleteReview } from "../controllers/reviews.js"; // Ensure the file path is correct
-import { filterdata } from "../controllers/listings.js";
+
 
 const router = Router();
 
