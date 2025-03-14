@@ -14,7 +14,7 @@ const ListingsPage = () => {
 
   useEffect(() => {
     fetchListings();
-    fetchFilterData();
+
   }, []);
 
   const fetchListings = async () => {
@@ -32,22 +32,6 @@ const ListingsPage = () => {
     }
   };
   
-  const fetchFilterData = async () => {
-    try {
-        console.log("Fetching filter data");
-        const response = await fetch("http://localhost:3030/api/listings/filters", {
-            method: "GET"
-        });
-        console.log(response);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const data = await response.json();
-        console.log("Fetched data:", data);
-        
-        setFilterData(data);
-    } catch (err) {
-        console.error("Fetch failed:", err);
-    }
-  };
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prevFilters) => ({ ...prevFilters, [filterType]: value }));

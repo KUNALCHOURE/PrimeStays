@@ -14,7 +14,10 @@ const NewListing = () => {
     price: '',
     location: '',
     country: '',
-    image: null, // Add image to form values
+    image: null,
+    phone: '',
+    email: '',
+    website: '',
   });
   const [formErrors, setFormErrors] = useState({});
 
@@ -62,14 +65,15 @@ const NewListing = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     const formData = new FormData();
-    formData.append("title", formValues.title);
-    formData.append("description", formValues.description);
-    formData.append("price", formValues.price);
-    formData.append("location", formValues.location);
-    formData.append("country", formValues.country);
-    
+  formData.append("title", formValues.title);
+  formData.append("description", formValues.description);
+  formData.append("price", formValues.price);
+  formData.append("location", formValues.location);
+  formData.append("country", formValues.country);
+  formData.append("phone", formValues.phone);
+  formData.append("email", formValues.email);
+  formData.append("website", formValues.website);
     if (formValues.image) {
         formData.append("image", formValues.image);
     }
@@ -80,6 +84,7 @@ const NewListing = () => {
     }
   
     try {
+      setLoading(true);
         const response = await axios.post("http://localhost:3030/api/listings", formData, {
             withCredentials: true,
             headers: {
@@ -88,6 +93,7 @@ const NewListing = () => {
         });
   
         console.log("Response:", response.data);
+        setLoading(false);
         toast.success("Listing created successfully!");
         navigate("/listings");
     } catch (error) {
@@ -256,7 +262,79 @@ const NewListing = () => {
               </div>
             )}
           </div>
+{/* Phone Number Input */}
+<div>
+  <label 
+    htmlFor="phone" 
+    className="block text-sm font-medium text-gray-700 mb-1"
+  >
+    Phone Number
+  </label>
+  <input
+    type="text"
+    id="phone"
+    name="phone"
+    value={formValues.phone}
+    onChange={handleChange}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+    placeholder="Enter Phone Number"
+    required
+  />
+  {formErrors.phone && (
+    <div className="invalid-feedback text-red-600 text-sm mt-1">
+      {formErrors.phone}
+    </div>
+  )}
+</div>
 
+{/* Email Address Input */}
+<div>
+  <label 
+    htmlFor="email" 
+    className="block text-sm font-medium text-gray-700 mb-1"
+  >
+    Email Address
+  </label>
+  <input
+    type="email"
+    id="email"
+    name="email"
+    value={formValues.email}
+    onChange={handleChange}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+    placeholder="Enter Email Address"
+    required
+  />
+  {formErrors.email && (
+    <div className="invalid-feedback text-red-600 text-sm mt-1">
+      {formErrors.email}
+    </div>
+  )}
+</div>
+
+{/* Website Input (optional) */}
+<div>
+  <label 
+    htmlFor="website" 
+    className="block text-sm font-medium text-gray-700 mb-1"
+  >
+    Website (optional)
+  </label>
+  <input
+    type="text"
+    id="website"
+    name="website"
+    value={formValues.website}
+    onChange={handleChange}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+    placeholder="Enter Website (if applicable)"
+  />
+  {formErrors.website && (
+    <div className="invalid-feedback text-red-600 text-sm mt-1">
+      {formErrors.website}
+    </div>
+  )}
+</div>
           {/* Submit Button */}
           <div className='flex justify-center'>
             <button

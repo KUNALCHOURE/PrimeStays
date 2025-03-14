@@ -43,7 +43,7 @@ const show = asynchandler(async (req, res) => {
 // Create new listing
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 
-
+// Create new listing
 const create = async (req, res) => {
     try {
         console.log("Request Body:", req.body);
@@ -60,7 +60,7 @@ const create = async (req, res) => {
         }
          console.log("done");
         // Store Cloudinary URL in DB
-        const { title, description, price, location, country } = req.body;
+        const { title, description, price, location, country, phone, email, website } = req.body;
         const nimage={
               url:cloudinaryUrl,
               filename:"image"
@@ -72,7 +72,12 @@ const create = async (req, res) => {
             location,
             country,
             image: nimage,
-            owner: req.user._id
+            owner: req.user._id,
+            ownerInfo: {
+                phone,
+                email,
+                website
+            }
         });
 
         await newListing.save();
@@ -88,11 +93,11 @@ console.log(cloudinaryUrl);
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
-
+// Update listing
 // Update listing
 const updateListing = asynchandler(async (req, res) => {
     const { id } = req.params;
-    const { title, description, price, location, country } = req.body;
+    const { title, description, price, location, country, phone, email, website } = req.body;
 
     const existingListing = await Listing.findById(id);
     
@@ -109,6 +114,11 @@ const updateListing = asynchandler(async (req, res) => {
         location,
         country,
         image: existingListing.image,
+        ownerInfo: {
+            phone,
+            email,
+            website
+        }
     };
 
     if (req.file) {
@@ -128,7 +138,6 @@ const updateListing = asynchandler(async (req, res) => {
         new Apiresponse(200, updatedListing, "Listing updated successfully")
     );
 });
-
 // Delete listing
 const deleteListing = asynchandler(async (req, res) => {
 

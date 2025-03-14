@@ -5,6 +5,7 @@ import api from '../../services/api';
 import { useAuth } from '../../context/authcontext';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+
 const ListingDetail = () => {
   const { id } = useParams();
   const { user } = useAuth(); 
@@ -12,9 +13,10 @@ const ListingDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [isdeleting, setdelete]=useState(false);
+  const [isdeleting, setdelete] = useState(false);
   const [reviewForm, setReviewForm] = useState({ rating: 1, comment: '' });
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchListingData = async () => {
       try {
@@ -31,24 +33,23 @@ const ListingDetail = () => {
     fetchListingData();
   }, [id]);
 
-  const handledeletelisting=async(req,res)=>{
+  const handledeletelisting = async () => {
     try {
       console.log(id);
       setdelete(true);
       console.log("deleting");
-       let response=await api.delete(`/listings/${id}`);
-       
-       if(!response){
-          throw new error(400,"problem while deleting the listings");
-
-       }
-       toast("Listing deleted successfully");
-       setdelete(false);
+      let response = await api.delete(`/listings/${id}`);
+      
+      if (!response) {
+        throw new Error("Problem while deleting the listings");
+      }
+      toast("Listing deleted successfully");
+      setdelete(false);
       navigate('/listings');
     } catch (error) {
-      toast.error(error.response?.data?.message || "Problem occured while deleting the listing")
+      toast.error(error.response?.data?.message || "Problem occurred while deleting the listing");
     }
-  }
+  };
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
@@ -89,6 +90,16 @@ const ListingDetail = () => {
         <p className="text-gray-700">{currentlisting.description}</p>
         <p className="text-lg font-semibold mt-4">Owned by {currentlisting.owner?.fullname || 'Unknown'}</p>
       </div>
+
+      {/* Contact Information */}
+      <div className="bg-white p-6 shadow-lg rounded-lg mt-6">
+        <h4 className="text-xl font-bold">Contact Information</h4>
+        <ul className="mt-2">
+          <li><strong>Phone:</strong> {currentlisting.ownerInfo?.phone || 'N/A'}</li>
+          <li><strong>Email:</strong> {currentlisting.ownerInfo?.email || 'N/A'}</li>
+          <li><strong>Website:</strong> <a href={currentlisting.ownerInfo?.website} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{currentlisting.ownerInfo?.website || 'N/A'}</a></li>
+        </ul>
+      </div>
       
       {/* Review Form */}
       {user && (
@@ -121,19 +132,17 @@ const ListingDetail = () => {
         </div>
       ) : <p className="text-center text-gray-500 mt-6">No reviews yet</p>}
 
-{user && currentlisting.owner.username === user.username && (
-  <div className='button mt-10'>
-    <button
-      className="bg-red-600 text-white px-4 py-2 rounded mt-4 hover:bg-red-700 transition-all"
-      onClick={handledeletelisting}
-    >
-      {isdeleting ? "Deleting" : "Delete"}
-    </button>
-  </div>
-)}
+      {user && currentlisting.owner.username === user.username && (
+        <div className='button mt-10'>
+          <button
+            className="bg-red-600 text-white px-4 py-2 rounded mt-4 hover:bg-red-700 transition-all"
+            onClick={handledeletelisting}
+          >
+            {isdeleting ? "Deleting" : "Delete"}
+          </button>
+        </div>
+      )}
     </div>
-
-   
   );
 };
 

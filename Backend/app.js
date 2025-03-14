@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use("/images", express.static("public/images"));
 
 //  API Routes
-app.use("/api/listings", listingRoutes);
+app.use("/api/listings", listingRoutes);// /filters
 app.use("/api/reviews", reviewsRoutes);  // ✅ Fixed inconsistent naming
 app.use("/api/auth", userRoutes);
 

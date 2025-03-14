@@ -28,6 +28,11 @@ const listingschema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "user",
   },
+  ownerInfo: {
+    phone: String,
+    email: String,
+    website: String,
+  },
 });
 
 // Middleware to delete associated reviews when a listing is deleted
