@@ -26,7 +26,7 @@ mongoose.connect(dbUrl)
     .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Middleware
-import cors from "cors";
+
 
 // CORS Middleware
 app.use(cors({
