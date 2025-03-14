@@ -133,7 +133,8 @@ const loginuser = asynchandler(async (req, res) => {
 });
 
 const logoutuser = asynchandler(async (req, res) => {
-  let userid = req.user._id;
+  console.log("login out");
+    let userid = req.user._id;
   await user.findByIdAndUpdate(userid, { $set: { refreshtoken: undefined } }, { new: true });
 
   const options = { httpOnly: true, secure: true };

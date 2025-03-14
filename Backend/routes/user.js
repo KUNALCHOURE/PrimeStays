@@ -17,7 +17,7 @@ router.route("/register").post(registerUser);
 router.route("/login").post(loginuser);
 
 // Secured routes using verifyJWT middleware
-router.route("/logout").get(verifyJWT, logoutuser);
+router.route("/logout").post(verifyJWT, logoutuser);
 router.route("/refresh-token").post(refreshaccesstoken);
 router.route("/change-password").post(verifyJWT, changecurrectuserpassword);
 router.route("/current-user").get(verifyJWT, getcurrectuser);
