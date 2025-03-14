@@ -1,6 +1,6 @@
 import Listing from "../models/listing.js";
 import Apierror from "../utils/Apierror.js";
-import Apiresponse from "../utils/apiresponse.js";
+import Apiresponse from "../utils/Apiresponse.js"
 import asynchandler from "../utils/asynchandler.js";
 import mongoose from "mongoose";
 // Get all listings

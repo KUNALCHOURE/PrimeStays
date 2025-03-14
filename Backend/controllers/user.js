@@ -1,7 +1,7 @@
 import asynchandler from "../utils/asynchandler.js";
 import Apierror from "../utils/Apierror.js";
 import user from "../models/user.js";
-import Apiresponse from "../utils/apiresponse.js";
+import Apiresponse from "../utils/Apiresponse.js";
 import jwt from "jsonwebtoken";
 
 const generateAccessandrefreshtoken = async (userID) => {
