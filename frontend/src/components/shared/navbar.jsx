@@ -17,7 +17,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link to="/listings" className="flex items-center space-x-2">
           <FaCompass className="text-red-500 text-4xl" />
-          <span className="text-2xl font-bold tracking-wide">Wonderlust</span>
+          <span className="text-2xl font-bold tracking-wide">PrimeStays</span>
         </Link>
 
         {/* Navigation Links */}
