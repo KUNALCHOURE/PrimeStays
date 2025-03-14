@@ -31,7 +31,8 @@ const authService = {
 
     logout: async () => {
         try {
-            const response = await api.get('/auth/logout');
+            console.log("hello");
+            const response = await api.post('/auth/logout');
             return response;
         } catch (error) {
             throw error.response?.data || error.message;
