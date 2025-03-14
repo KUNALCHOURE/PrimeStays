@@ -26,10 +26,16 @@ mongoose.connect(dbUrl)
     .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Middleware
+import cors from "cors";
+
+// CORS Middleware
 app.use(cors({
-    origin: "https://prime-stays.vercel.app/", // Your React app URL
-    credentials: true,
+    origin: "https://prime-stays.vercel.app",  // ✅ Your frontend URL (Vercel)
+    credentials: true,  // ✅ Allows cookies & authentication tokens
+    methods: ["GET", "POST", "PUT", "DELETE"],  // ✅ Allow essential HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"]  // ✅ Allow necessary headers
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
