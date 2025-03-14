@@ -7,7 +7,7 @@ import user from '../models/user.js';
   try{
 
     const token= req.cookies?.accessToken|| req.header("Authorization")?.replace("Bearer ","");
- console.log(token);
+ console.log("access token ",token);
   if(!token){
     throw new Apierror(401,"Unauthorised request");
 
