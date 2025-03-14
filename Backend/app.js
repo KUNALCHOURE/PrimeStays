@@ -27,7 +27,7 @@ mongoose.connect(dbUrl)
 
 // Middleware
 app.use(cors({
-    origin: "http://localhost:5173", // Your React app URL
+    origin: "https://prime-stays.vercel.app/", // Your React app URL
     credentials: true,
 }));
 app.use(express.json());
