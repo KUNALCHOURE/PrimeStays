@@ -85,12 +85,12 @@ const NewListing = () => {
   
     try {
       setLoading(true);
-        const response = await axios.post("http://localhost:3030/api/listings", formData, {
-            withCredentials: true,
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+      const response = await api.post("/listings", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+    
   
         console.log("Response:", response.data);
         setLoading(false);

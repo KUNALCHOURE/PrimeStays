@@ -59,6 +59,7 @@ const ListingDetail = () => {
     setIsSubmitting(true);
     try {
       const response = await api.post(`/listing/${id}/reviews`, reviewForm);
+      console.log("submitting the review");
       if (response.data.success) {
         setCurrentListing(prev => ({ ...prev, reviews: [...prev.reviews, response.data.data] }));
         setReviewForm({ rating: 1, comment: '' });

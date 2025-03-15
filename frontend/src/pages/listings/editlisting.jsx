@@ -35,11 +35,12 @@ const EditListing = () => {
     formData.append('_method', 'PUT'); // For method-override
 
     try {
-      const response = await fetch(`/listings/${id}?_method=PUT`, {
-        method: 'POST',
-        body: formData
-      });
-
+      const response = await api.put(`/listings/${id}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+    
       if (!response.ok) throw new Error('Failed to update listing');
 
       toast.success('Listing updated successfully!');
