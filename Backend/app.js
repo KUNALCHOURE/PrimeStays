@@ -23,17 +23,17 @@ const dbUrl = process.env.ATLASDB_URL;
 // Connect to MongoDB
 mongoose.connect(dbUrl)
     .then(() => console.log(" Connected to MongoDB"))
-    .catch((err) => console.error("❌ MongoDB connection error:", err));
+    .catch((err) => console.error(" MongoDB connection error:", err));
 
 // Middleware
 
 app.use(cookieParser());
 // CORS Middleware
 app.use(cors({
-    origin: "https://prime-stays.vercel.app",  // ✅ Your frontend URL (Vercel)
-    credentials: true,  // ✅ Allows cookies & authentication tokens
-    methods: ["GET", "POST", "PUT", "DELETE"],  // ✅ Allow essential HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"]  // ✅ Allow necessary headers
+    origin: "https://prime-stays.vercel.app",  
+    credentials: true, 
+    methods: ["GET", "POST", "PUT", "DELETE"],  
+    allowedHeaders: ["Content-Type", "Authorization"]  
 }));
 
 app.use(express.json());
@@ -44,8 +44,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/images", express.static("public/images"));
 
 //  API Routes
-app.use("/api/listings", listingRoutes);// /filters
-app.use("/api/reviews", reviewsRoutes);  // ✅ Fixed inconsistent naming
+app.use("/api/listings", listingRoutes);
+app.use("/api/listing", reviewsRoutes);  
 app.use("/api/auth", userRoutes);
 
 //  404 Handler for Invalid Routes
