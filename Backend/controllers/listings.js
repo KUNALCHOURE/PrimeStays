@@ -46,6 +46,7 @@ import { uploadToCloudinary } from "../utils/cloudinary.js";
 // Create new listing
 const create = async (req, res) => {
     try {
+        console.log("Headers:", req.headers);
         console.log("Request Body:", req.body);
         console.log("File Received:", req.file);
 
@@ -56,33 +57,37 @@ const create = async (req, res) => {
         // Upload image to Cloudinary directly from buffer
         const cloudinaryUrl = await uploadToCloudinary(req.file.buffer);
         if (!cloudinaryUrl) {
+            console.error("Cloudinary Upload Failed");
             return res.status(500).json({ success: false, message: "Failed to upload image to Cloudinary" });
         }
-         console.log("done");
-        // Store Cloudinary URL in DB
-        const { title, description, price, location, country, phone, email, website } = req.body;
-        const nimage={
-              url:cloudinaryUrl,
-              filename:"image"
+
+        console.log("Image uploaded successfully:", cloudinaryUrl);
+
+        // Ensure authenticated user is present
+        if (!req.user || !req.user._id) {
+            return res.status(401).json({ success: false, message: "Unauthorized: User not found" });
         }
+        
+        // Extract data from request
+        const { title, description, price, location, country, phone, email, website } = req.body;
+
         const newListing = new Listing({
             title,
             description,
             price,
             location,
             country,
-            image: nimage,
+            image: {
+                url: cloudinaryUrl,
+                filename: "image"
+            },
             owner: req.user._id,
-            ownerInfo: {
-                phone,
-                email,
-                website
-            }
+            ownerInfo: { phone, email, website }
         });
 
         await newListing.save();
-console.log('done 2')
-console.log(cloudinaryUrl);
+        console.log("Listing saved successfully");
+
         return res.status(201).json({
             success: true,
             listing: newListing,
@@ -93,6 +98,7 @@ console.log(cloudinaryUrl);
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
 // Update listing
 // Update listing
 const updateListing = asynchandler(async (req, res) => {
