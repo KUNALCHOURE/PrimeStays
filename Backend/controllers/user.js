@@ -126,10 +126,19 @@ const loginuser = asynchandler(async (req, res) => {
     path: "/",
   };
 
-  return res.status(200)
-    .cookie("accessToken", accesstoken, options)
-    .cookie("refreshToken", refreshtoken, options)
-    .json(new Apiresponse(200, { user: loggedinuser, accesstoken, refreshtoken }, "User logged in successfully"));
+  res.cookie("accessToken", accesstoken, {
+    httpOnly: true,
+    secure: true,  // ✅ Always true for production
+    sameSite: "None",  // ✅ Required for cross-origin requests
+    path: "/",
+  });
+
+  res.cookie("refreshToken", refreshtoken, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    path: "/",
+  });
 });
 
 const logoutuser = asynchandler(async (req, res) => {
