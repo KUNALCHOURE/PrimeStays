@@ -1,7 +1,7 @@
-// src/pages/Listings/EditListing.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import api from '../../services/api';
 
 const EditListing = () => {
   const { id } = useParams();
@@ -16,14 +16,12 @@ const EditListing = () => {
 
   const fetchListing = async () => {
     try {
-      const response = await fetch(`/listings/${id}`);
-      if (!response.ok) throw new Error('Failed to fetch listing');
-      
-      // Since we're working with the existing backend, redirect to the edit page
-      window.location.href = `/listings/${id}/edit`;
+      const response = await api.get(`/listings/${id}`);
+      setOriginalImageUrl(response.data.image.url); // ✅ Set image URL from response
     } catch (error) {
       toast.error('Error loading listing');
-      setLoading(false);
+    } finally {
+      setLoading(false); // ✅ Stop loading after fetching data
     }
   };
 
@@ -32,16 +30,13 @@ const EditListing = () => {
     setSubmitting(true);
 
     const formData = new FormData(e.target);
-    formData.append('_method', 'PUT'); // For method-override
 
     try {
-      const response = await api.put(`/listings/${id}`, formData, {
+      await api.put(`/listings/${id}`, formData, {
         headers: {
-            "Content-Type": "multipart/form-data",
+          "Content-Type": "multipart/form-data",
         },
-    });
-    
-      if (!response.ok) throw new Error('Failed to update listing');
+      });
 
       toast.success('Listing updated successfully!');
       navigate(`/listings/${id}`);
@@ -71,8 +66,7 @@ const EditListing = () => {
           encType="multipart/form-data"
           noValidate
         >
-          {/* Same form fields as NewListing, but with defaultValue set */}
-          {/* ... form fields ... */}
+          {/* Form Fields */}
 
           {/* Original Image Display */}
           {originalImageUrl && (
