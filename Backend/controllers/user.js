@@ -116,16 +116,11 @@ const loginuser = asynchandler(async (req, res) => {
   }
 
   const { accesstoken, refreshtoken } = await generateAccessandrefreshtoken(result._id);
-  console.log(accesstoken);
+  console.log("🔍 Access Token:", accesstoken);
 
   const loggedinuser = await user.findById(result._id).select("-password -refreshtoken");
 
-  const options = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-  };
-
+  // ✅ Corrected cookie settings
   res.cookie("accessToken", accesstoken, {
     httpOnly: true,
     secure: true,  // ✅ Always true for production
@@ -139,7 +134,10 @@ const loginuser = asynchandler(async (req, res) => {
     sameSite: "None",
     path: "/",
   });
+
+  return res.status(200).json(new Apiresponse(200, { user: loggedinuser, accesstoken, refreshtoken }, "User logged in successfully"));
 });
+
 
 const logoutuser = asynchandler(async (req, res) => {
   console.log("login out");
