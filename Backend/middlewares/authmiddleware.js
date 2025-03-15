@@ -5,7 +5,9 @@ import user from '../models/user.js';
 
  const verifyJWT=asynchandler(async(req,_,next)=>{  //here res is not used so we can write _ in that place 
   try{
-
+    console.log("🔍 Checking authentication...");
+    console.log("🔍 Cookies received:", req.cookies);
+    console.log("🔍 Authorization Header:", req.headers.authorization);
     const token= req.cookies?.accessToken|| req.header("Authorization")?.replace("Bearer ","");
  console.log("access token ",token);
   if(!token){

@@ -27,7 +27,7 @@ mongoose.connect(dbUrl)
 
 // Middleware
 
-
+app.use(cookieParser());
 // CORS Middleware
 app.use(cors({
     origin: "https://prime-stays.vercel.app",  // ✅ Your frontend URL (Vercel)
@@ -38,7 +38,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
 
 //  Serve Images from Public Folder
 app.use("/images", express.static("public/images"));
