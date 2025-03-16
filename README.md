@@ -69,49 +69,6 @@ PrimeStays is a luxury property listing platform where users can list, browse, a
     npm install
     ```
 
- ## Environment Variables
-
- ### Backend `.env`
- # Server Configuration
- PORT=3030
- 
- # MongoDB Connection
- ATLASDB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/primestays?retryWrites=true&w=majority
- 
- # JWT Authentication
- JWT_SECRET=your_extremely_long_and_secure_random_secret_key_here
-
- # Cloudinary Credentials for Image Storage
- CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
- CLOUDINARY_API_KEY=your_cloudinary_api_key
- CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-
- # Optional: CORS Configuration
- CORS_ORIGIN=http://localhost:5173
-
- # Optional: Additional Security
- NODE_ENV=development
-
-
- ### Frontend `.env`
- # Base API URL for Backend
- REACT_APP_API_BASE_URL=https://primestays-oxct.onrender.com
-
- # Cloudinary Configuration (Optional)
- REACT_APP_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
- REACT_APP_CLOUDINARY_UPLOAD_PRESET=your_cloudinary_upload_preset
-
- # Google Analytics (Optional)
- REACT_APP_GA_TRACKING_ID=your_google_analytics_tracking_id
-
- # Environment Mode
- REACT_APP_ENV=development
-
- # Optional Feature Flags
- REACT_APP_ENABLE_REVIEWS=true
- REACT_APP_ENABLE_BOOKING=true
-
-
  ## Usage
 
  1. Start the backend server:
