@@ -130,7 +130,6 @@ PrimeStays is a luxury property listing platform where users can list, browse, a
 
 
  ## Live Demo
+ [PrimeStays](https://prime-stays.vercel.app)
 
- - **Frontend:** [PrimeStays](https://prime-stays.vercel.app)
- - **Backend API:** [PrimeStays API](https://primestays-oxct.onrender.com)
 
