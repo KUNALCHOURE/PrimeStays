@@ -148,3 +148,7 @@ PrimeStays is a luxury property listing platform where users can list, browse, a
 <br><br>
 
 ![Image](https://github.com/user-attachments/assets/c617a46c-d358-40f7-a9c7-5e63ed10a685)
+
+<br><br>
+
+![Image](https://github.com/user-attachments/assets/492d89cb-29a0-4b64-aff0-427791fe84da)
