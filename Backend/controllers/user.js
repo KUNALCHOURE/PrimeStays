@@ -144,8 +144,13 @@ const logoutuser = asynchandler(async (req, res) => {
     let userid = req.user._id;
   await user.findByIdAndUpdate(userid, { $set: { refreshtoken: undefined } }, { new: true });
 
-  const options = { httpOnly: true, secure: true };
-
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Ensure this matches your environment
+    sameSite: "None", // Required for cross-origin requests
+    path: "/", // Ensure this matches the path used when setting the cookies
+  };
+  console.log("user loged out succesfully ")
   return res.status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
