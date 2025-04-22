@@ -24,10 +24,10 @@ const Footer = () => {
         <div className="space-y-4 flex flex-col justify-center ">
           <h3 className="text-xl font-semibold text-center">Quick Links</h3>
           <ul className="text-gray-400 text-sm space-y-2 text-center ">
-            <li><Link to="/about" className="hover:text-red-500 transition-colors">About Us</Link></li>
-            <li><Link to="/contact" className="hover:text-red-500 transition-colors">Contact</Link></li>
-            <li><Link to="/services" className="hover:text-red-500 transition-colors">Services</Link></li>
-            <li><Link to="/faq" className="hover:text-red-500 transition-colors">FAQ</Link></li>
+            <li><Link to="/" className="hover:text-red-500 transition-colors">About Us</Link></li>
+            <li><Link to="/" className="hover:text-red-500 transition-colors">Contact</Link></li>
+            <li><Link to="/" className="hover:text-red-500 transition-colors">Services</Link></li>
+            <li><Link to="/" className="hover:text-red-500 transition-colors">FAQ</Link></li>
           </ul>
         </div>
 
@@ -36,7 +36,7 @@ const Footer = () => {
           <h3 className="text-xl font-semibold">Follow Us</h3>
           <div className="flex justify-center sm:justify-start md:justify-center space-x-4 text-2xl">
             <motion.a
-              href="#"
+              href="/"
               className="w-12 h-12 bg-gray-800 text-white flex items-center justify-center rounded-full shadow-lg hover:bg-blue-600"
               whileHover={{ scale: 1.2, rotateY: 360 }}
               transition={{ duration: 0.5 }}
@@ -44,7 +44,7 @@ const Footer = () => {
               <FontAwesomeIcon icon={faFacebook} />
             </motion.a>
             <motion.a
-              href="#"
+              href="/"
               className="w-12 h-12 bg-gray-800 text-white flex items-center justify-center rounded-full shadow-lg hover:bg-pink-500"
               whileHover={{ scale: 1.2, rotateY: 360 }}
               transition={{ duration: 0.5 }}
@@ -52,7 +52,7 @@ const Footer = () => {
               <FontAwesomeIcon icon={faInstagram} />
             </motion.a>
             <motion.a
-              href="#"
+              href="/"
               className="w-12 h-12 bg-gray-800 text-white flex items-center justify-center rounded-full shadow-lg hover:bg-blue-700"
               whileHover={{ scale: 1.2, rotateY: 360 }}
               transition={{ duration: 0.5 }}
@@ -60,7 +60,7 @@ const Footer = () => {
               <FontAwesomeIcon icon={faLinkedin} />
             </motion.a>
             <motion.a
-              href="#"
+              href="/"
               className="w-12 h-12 bg-gray-800 text-white flex items-center justify-center rounded-full shadow-lg hover:bg-blue-400"
               whileHover={{ scale: 1.2, rotateY: 360 }}
               transition={{ duration: 0.5 }}
@@ -76,12 +76,12 @@ const Footer = () => {
         <p>&copy; {new Date().getFullYear()} Luxury Stays. All Rights Reserved.</p>
         <div className="flex justify-center space-x-6 mt-2">
           <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }}>
-            <Link to="/privacy" className="hover:text-red-500 transition-colors">
+            <Link to="/" className="hover:text-red-500 transition-colors">
               Privacy Policy
             </Link>
           </motion.div>
           <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.3 }}>
-            <Link to="/terms" className="hover:text-red-500 transition-colors">
+            <Link to="/" className="hover:text-red-500 transition-colors">
               Terms & Conditions
             </Link>
           </motion.div>
